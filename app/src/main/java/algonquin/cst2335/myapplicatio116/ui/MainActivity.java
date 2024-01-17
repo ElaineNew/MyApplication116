@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import algonquin.cst2335.myapplicatio116.data.MainViewModel;
 import algonquin.cst2335.myapplicatio116.databinding.ActivityMainBinding;
@@ -19,16 +20,37 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = new ViewModelProvider(this).get(MainViewModel.class);
-        model.editString.observe(this, s-> {
-            variableBinding.mytext.setText("Your edit text has " + s);
-        });
+
         variableBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(variableBinding.getRoot());
+
+        model = new ViewModelProvider(this).get(MainViewModel.class);
+        model.editString.observe(this, s-> {
+            variableBinding.mytext.setText("Your edit text has: " + s);
+        });
+
+        model.isSelected.observe(this, selected->{
+            variableBinding.checkBox.setChecked(selected);
+            variableBinding.radioButton.setChecked(selected);
+            variableBinding.switch1.setChecked(selected);
+            Toast toast = Toast.makeText(this, "The value is now: " + selected, Toast.LENGTH_LONG);
+            toast.show();
+        });
 
         variableBinding.mybutton.setOnClickListener(click -> {
             model.editString.postValue(variableBinding.myedittext.getText().toString());
         });
+
+        variableBinding.checkBox.setOnCheckedChangeListener((btn, isChecked)->{
+            model.isSelected.postValue(isChecked);
+        });
+        variableBinding.radioButton.setOnCheckedChangeListener((btn, isChecked)->{
+            model.isSelected.postValue(isChecked);
+        });
+        variableBinding.switch1.setOnCheckedChangeListener((btn, isChecked)->{
+            model.isSelected.postValue(isChecked);
+        });
+
     }
 
 }
