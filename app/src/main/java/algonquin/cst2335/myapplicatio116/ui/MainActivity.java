@@ -37,10 +37,12 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         });
 
+        //click listener for button to change textview
         variableBinding.mybutton.setOnClickListener(click -> {
             model.editString.postValue(variableBinding.myedittext.getText().toString());
         });
 
+        //onCheckedChangeListner to togggle choice
         variableBinding.checkBox.setOnCheckedChangeListener((btn, isChecked)->{
             model.isSelected.postValue(isChecked);
         });
@@ -49,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         });
         variableBinding.switch1.setOnCheckedChangeListener((btn, isChecked)->{
             model.isSelected.postValue(isChecked);
+        });
+
+        //onClickListener to show image button size
+        variableBinding.myimagebutton.setOnClickListener(click->{
+            Toast toast = Toast.makeText(this, "The width =" + variableBinding.myimagebutton.getWidth()
+                    + " and height = " + variableBinding.myimagebutton.getHeight()
+                    , Toast.LENGTH_LONG);
+            toast.show();
         });
 
     }
