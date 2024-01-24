@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">佳莹的安卓项目</string>
+    <string name="button_message">我是按钮</string>
+    <string name="hello_message">你好世界</string>
+    <string name="spin_message">旋转旗帜</string>
+    <string name="button1">按钮一</string>
+    <string name="button2">按钮二</string>
+    <string name="button3">按钮三</string>
+</resources>
