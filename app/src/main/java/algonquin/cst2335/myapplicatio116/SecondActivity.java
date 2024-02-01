@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -30,9 +31,11 @@ public class SecondActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //store image
         super.onActivityResult(requestCode, resultCode, data);
+        // save only when the result is OK and data is not null
+        if(resultCode == Activity.RESULT_OK && data != null){
         FileOutputStream fOut = null;
-
         try { fOut = openFileOutput("Picture.png", Context.MODE_PRIVATE);
             Bitmap mBitmap = (Bitmap) data.getExtras().get("data");
             mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
@@ -40,6 +43,7 @@ public class SecondActivity extends AppCompatActivity {
             fOut.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
         }
     }
 
@@ -55,18 +59,27 @@ public class SecondActivity extends AppCompatActivity {
         welcome.setText("Welcome: " + emailAddress);
 
         EditText phoneInput = findViewById(R.id.editTextPhone2);
+
+        //SharedPreferences:
+        SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String phoneNumber = prefs.getString("PhoneNumber", "");
+        //set the edittext
+        phoneInput.setText(phoneNumber);
+
         Intent call = new Intent(Intent.ACTION_DIAL);
         // CALL BUTTON
         Button callButton = findViewById(R.id.button);
         callButton.setOnClickListener(click->{
-            String phoneNumber = phoneInput.getText().toString();
-            call.setData(Uri.parse("tel:" + phoneNumber));
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("PhoneNumber", phoneInput.getText().toString());
+            editor.apply();
+            String dialNumber = phoneInput.getText().toString();
+            call.setData(Uri.parse("tel:" + dialNumber));
             startActivity(call);
         });
 
 
-
-
+        //taking picture
         ImageView profileImage = findViewById(R.id.imageView2);
 
         Button imageButton = findViewById(R.id.button2);
