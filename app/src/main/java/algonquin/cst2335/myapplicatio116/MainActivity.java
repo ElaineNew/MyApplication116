@@ -2,10 +2,13 @@ package algonquin.cst2335.myapplicatio116;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,11 +18,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.w( "MainActivity", "In onCreate() - Loading Widgets" );
         Button loginButton = findViewById(R.id.loginbutton);
+        EditText addressInput = findViewById(R.id.addressinput);
+        EditText passwordInput = findViewById(R.id.passwordinput);
+
+        //SharedPreferences:
+        SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String emailAddress = prefs.getString("EmailAddress", "");
+        String password = prefs.getString("Password", "");
+        //set the edittext
+        addressInput.setText(emailAddress);
+        passwordInput.setText(password);
 
         Intent nextPage = new Intent(MainActivity.this, SecondActivity.class);
         loginButton.setOnClickListener(clk->{
+            nextPage.putExtra("EmailAddress",addressInput.getText().toString());
+            //save user input
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("EmailAddress", addressInput.getText().toString());
+            editor.putString("Password", passwordInput.getText().toString());
+            editor.apply();
+
+            //GO TO NEXT PAGE
             startActivity(nextPage);
         });
+
+
+
+
+
     }
 
 
