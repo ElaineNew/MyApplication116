@@ -2,5 +2,9 @@
     <string name="app_name">Jiaying\'s Android Labs</string>
     <string name="button_message">I\'m a button</string>
     <string name="hello_message">Hello World！</string>
+    <string name="password_message">Type your password.</string>
+    <string name="loginbutton_message">LOGIN</string>
+
+
 
 </resources>
