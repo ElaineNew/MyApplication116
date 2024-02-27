@@ -11,16 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import algonquin.cst2335.myapplicatio116.data.ChatRoomViewModel;
 import algonquin.cst2335.myapplicatio116.databinding.ActivityChatRoomBinding;
+import algonquin.cst2335.myapplicatio116.databinding.ReceiveMessageBinding;
 import algonquin.cst2335.myapplicatio116.databinding.SentMessageBinding;
 
 public class ChatRoom extends AppCompatActivity {
     ActivityChatRoomBinding binding;
     private RecyclerView.Adapter myAdapter;
-    ArrayList<String> messages;
+    ArrayList<ChatMessage> messages;
     ChatRoomViewModel chatModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,29 +36,48 @@ public class ChatRoom extends AppCompatActivity {
         messages = chatModel.messages.getValue();
         if(messages == null)
         {
-            chatModel.messages.postValue( messages = new ArrayList<String>());
+            chatModel.messages.postValue( messages = new ArrayList<ChatMessage>());
         }
 
 
         binding.sendButton.setOnClickListener(click->{
-            messages.add(binding.textInput.getText().toString());
+            SimpleDateFormat sdf = new SimpleDateFormat("EE, dd-MM-yyyy hh-mm-ss a");
+            String currentDateandTime = sdf.format(new Date());
+
+            messages.add(new ChatMessage(binding.textInput.getText().toString(), currentDateandTime, true));
+
             myAdapter.notifyItemInserted(messages.size()-1);
             binding.textInput.setText("");
         });
-        binding.recycleView.setAdapter(myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
+
+        binding.receiveButton.setOnClickListener(click->{
+            SimpleDateFormat sdf = new SimpleDateFormat("EE, dd-MM-yyyy hh-mm-ss a");
+            String currentDateandTime = sdf.format(new Date());
+
+            messages.add(new ChatMessage(binding.textInput.getText().toString(), currentDateandTime, false));
+
+            myAdapter.notifyItemInserted(messages.size()-1);
+            binding.textInput.setText("");
+        });
+
+        binding.recyclerView.setAdapter(myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
             @NonNull
             @Override
             public MyRowHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                SentMessageBinding binding = SentMessageBinding.inflate(getLayoutInflater());
-                return new MyRowHolder(binding.getRoot());
+                if(viewType == 1){
+                    ReceiveMessageBinding binding = ReceiveMessageBinding.inflate(getLayoutInflater());
+                    return new MyRowHolder(binding.getRoot());
+                }else{
+                    SentMessageBinding binding = SentMessageBinding.inflate(getLayoutInflater());
+                    return new MyRowHolder(binding.getRoot());
+                }
             }
 
             @Override
             public void onBindViewHolder(@NonNull MyRowHolder holder, int position) {
-                String obj = messages.get(position);
-                holder.messageText.setText(obj);
-                holder.timeText.setText("");
-
+                ChatMessage obj = messages.get(position);
+                holder.messageText.setText(obj.getMessage());
+                holder.timeText.setText(obj.getTimeSent());
             }
 
             @Override
@@ -65,11 +87,15 @@ public class ChatRoom extends AppCompatActivity {
 
             @Override
             public int getItemViewType(int position) {
-                return 0;
+                if(messages.get(position).isSentButton() == true){
+                    return 0;
+                }else{
+                    return 1;
+                }
             }
         });
 
-        binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     class MyRowHolder extends RecyclerView.ViewHolder {
