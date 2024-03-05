@@ -4,6 +4,7 @@
     <string name="hello_message">Hello World！</string>
     <string name="password_message">Type your password.</string>
     <string name="loginbutton_message">LOGIN</string>
-
+    <string name="receive_message">RECEIVE</string>
+    <string name="send_message">SEND</string>
 
 </resources>
