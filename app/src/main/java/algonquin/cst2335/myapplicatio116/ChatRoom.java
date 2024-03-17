@@ -36,7 +36,7 @@ public class ChatRoom extends AppCompatActivity {
     private RecyclerView.Adapter myAdapter ;
     static ChatMessageDAO mDAO;
     ArrayList<ChatMessage> messages;
-//    ChatRoomViewModel chatModel;
+    ChatRoomViewModel chatModel;
 
 
     @Override
@@ -53,12 +53,12 @@ public class ChatRoom extends AppCompatActivity {
                 .build();
         mDAO = db.cmDAO();
 
-//        chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
-//        messages = chatModel.messages.getValue();
+        chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
+        messages = chatModel.messages.getValue();
         if(messages == null)
         {
             //setValue and postValue
-//            chatModel.messages.setValue( messages = new ArrayList<>());
+            chatModel.messages.setValue( messages = new ArrayList<>());
             Executor thread = Executors.newSingleThreadExecutor();
             thread.execute(() ->
             {
@@ -143,7 +143,7 @@ public class ChatRoom extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
             if (item.getItemId() == R.id.deleteIcon) {
-                // 处理删除菜单项的点击事件
+                // handle deleteicon click
                 AlertDialog.Builder builder = new AlertDialog.Builder( ChatRoom.this );
                 builder.setMessage("Do you want to delete all messages?")
                         .setTitle("Questions: ")
@@ -153,14 +153,15 @@ public class ChatRoom extends AppCompatActivity {
                             thread.execute(() ->
                             {//delete from another thread
                                 mDAO.deleteAll();
-                                myAdapter.notifyDataSetChanged();
+                                messages = new ArrayList<>();
+                                runOnUiThread(() -> myAdapter.notifyDataSetChanged());
                             });
                         });
                 builder.show();
 
                 return true;
             } else if (item.getItemId() == R.id.aboutIcon) {
-                // 处理关于菜单项的点击事件
+                // handle abouticon click
                 Toast.makeText(getApplicationContext(), "Version 1.0, created by Jiaying Qiu", Toast.LENGTH_LONG).show();
 
                 return true;
@@ -169,34 +170,6 @@ public class ChatRoom extends AppCompatActivity {
             }
         }
 
-//        switch( item.getItemId() )
-//        {
-//            case R.id.deleteIcon:
-//                //put your ChatMessage deletion code here. If you select this item, you should show the alert dialog
-//                //asking if the user wants to delete this message.
-//                AlertDialog.Builder builder = new AlertDialog.Builder( ChatRoom.this );
-//                builder.setMessage("Do you want to delete all messages?")
-//                        .setTitle("Questions: ")
-//                        .setNegativeButton("No", (dialog, cl)->{})
-//                        .setPositiveButton("Yes", (dialog, cl)->{
-//                            Executor thread = Executors.newSingleThreadExecutor();
-//                            thread.execute(() ->
-//                            {//delete from another thread
-//                                mDAO.deleteAll();
-//                                myAdapter.notifyDataSetChanged();
-//                            });
-//                        });
-//
-//                builder.show();
-//                return true;
-//
-//            case R.id.aboutIcon:
-//                Toast.makeText(getApplicationContext(), "Version 1.0, created by Jiaying Qiu", Toast.LENGTH_LONG).show();
-//            return true;
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
 
 
 
